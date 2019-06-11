@@ -16,7 +16,7 @@ Provided Jupyter notebooks result in a [lwlrap](https://www.kaggle.com/c/freesou
 - [Training VGG16 model](code/training-vgg16.ipynb)
 - [Inference kernel](code/inference-kernel.ipynb)
 
-You can also find resulting weights of CNN-model-1 and VGG-16 training in [weights directory](weights)
+You can also find resulting weights of CNN-model-1 and VGG-16 training in [weights directory](weights). Note [git-lfs](https://git-lfs.github.com/) might be required to download them using git.
 
 ## Audio Data Preprocessing
 
