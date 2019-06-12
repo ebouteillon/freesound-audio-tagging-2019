@@ -113,7 +113,7 @@ Table 2: Empirical results of CNN-model-1 using proposed warm-up pipeline
 - Nvidia RTX 2080 ti
 - 24 GB RAM
 - Ubuntu 18.04.2
-- Detailed list of installed [python packages](conda_list.txt) (more than necessary)
+- Detailed list of installed [python package with conda](requirements.txt) (more than necessary)
 
 ## REFERENCES
 
