@@ -69,6 +69,9 @@ One important technique to leverage a small training set is to augment this set 
 
         where
 
+Figure 1: Comparison of mixup, SpecAugment and SpecMix
+![compare augmentations](images/all_augmentations.png)
+
 ### Others data augmentation
 
 We added other data augmentation techniques:
@@ -94,10 +97,10 @@ An important point of this competition, is that we are not allowed to use extern
 - **Stage 4** : Let&#39;s continue semi-supervised learning: our algorithm select again samples from noisy set that are strictly correctly classified by model3. This algorithm simply keep sample from noisy set getting a lwlrap3 equal to 1. Then train a model (model4) on curated plus selected noisy samples and use model3 as pretrained model.
 - **Last stage:** ensemble predictions on test set from model2, model3 and model4.
 
-Figure 1: warm-up pipeline
+Figure 2: warm-up pipeline
 ![model-explained](images/model-explained.png)
 
-| **Model** | **lwlrap noisy** | **lwlrap curated** | **leaderboard** |
+| Model | lwlrap noisy | lwlrap curated | leaderboard |
 | --- | --- | --- | --- |
 | model1 | 0.65057 | 0.41096 | N/A |
 | model2 | 0.38142 | 0.86222 | 0.723 |
