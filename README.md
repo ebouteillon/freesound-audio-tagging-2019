@@ -2,9 +2,35 @@
 
 This is the solution I proposed for [Kaggle Freesound Audio Tagging 2019 Competition](https://www.kaggle.com/c/freesound-audio-tagging-2019/overview).
 
-[![MIT license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![public leaderboard](https://img.shields.io/badge/public%20leaderboard-12-brightgreen.svg) ![private leaderboard](https://img.shields.io/badge/private%20leaderboard-%3F-orange.svg)](https://www.kaggle.com/c/freesound-audio-tagging-2019/leaderboard)
+[![MIT license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![public leaderboard](https://img.shields.io/badge/public%20leaderboard-12th-brightgreen.svg) ![private leaderboard](https://img.shields.io/badge/private%20leaderboard-%3F-orange.svg)](https://www.kaggle.com/c/freesound-audio-tagging-2019/leaderboard)
 
-## Presentation
+## Table of Content
+
+- [Kaggle Freesound Audio Tagging 2019 Competition - Eric BOUTEILLON's Solution](#kaggle-freesound-audio-tagging-2019-competition---eric-bouteillons-solution)
+  - [Table of Content](#table-of-content)
+  - [Motivation of this repository](#motivation-of-this-repository)
+  - [TL;DR - give me code!](#tldr---give-me-code)
+  - [Installation](#installation)
+    - [Installation method 1 - Identical to author](#installation-method-1---identical-to-author)
+    - [Installation method 2 - Use conda recommended packages](#installation-method-2---use-conda-recommended-packages)
+    - [Hardware / Software](#hardware--software)
+  - [Reproduce results](#reproduce-results)
+  - [Solution Description](#solution-description)
+    - [Audio Data Preprocessing](#audio-data-preprocessing)
+    - [Models Summary](#models-summary)
+    - [Data Augmentation](#data-augmentation)
+      - [SpecMix :+1:](#specmix-1)
+      - [Others data augmentation](#others-data-augmentation)
+    - [Training - warm-up pipeline :+1:](#training---warm-up-pipeline-1)
+    - [Inference](#inference)
+    - [Results](#results)
+    - [Conclusion](#conclusion)
+    - [Ackowledgment](#ackowledgment)
+    - [References](#references)
+
+Indicators :+1: were added to sections containing major contributions from the author.
+
+## Motivation  of this repository
 
 This repository presents a semi-supervised **warm-up pipeline** used to create an efficient audio tagging system as well as a novel data augmentation technique for multi-labels audio tagging named by the author **SpecMix**.
 
@@ -12,7 +38,7 @@ These new techniques were applied to our submitted audio tagging system to the K
 
 ## TL;DR - give me code!
 
-Provided Jupyter notebooks result in a [lwlrap](https://www.kaggle.com/c/freesound-audio-tagging-2019/overview/evaluation) of .738 in public leaderboard, that is to say 12th position in this competition.
+Provided Jupyter notebooks result in a [lwlrap](https://www.kaggle.com/c/freesound-audio-tagging-2019/overview/evaluation) of .738 in public [leaderboard](https://www.kaggle.com/c/freesound-audio-tagging-2019/leaderboard), that is to say 12th position in this competition.
 
 - [Training CNN model 1](code/training-cnn-model1.ipynb)
 - [Training VGG16 model](code/training-vgg16.ipynb)
@@ -24,7 +50,7 @@ You can also find resulting weights of CNN-model-1 and VGG-16 training in [weigh
 
 This competition required to performed inference in a Kaggle kernel without change in its configuration. So it was important to use same version of pytorch and fastai as the Kaggle kernel configuration during the competition to be able to load locally generated CNN weights. So it is important to use pytorch 1.0.1 and fastai 1.0.51.
 
-### Installation method 1
+### Installation method 1 - Identical to author
 
 To get same configuration as my local system, here are the steps, tested on GNU Linux Ubuntu 18.04.2 LTS:
 
@@ -42,9 +68,9 @@ You are ready to go!
 
 **Note:** My configuration has CUDA 10 installed, so you may have to adapt version of pytorch and cudatoolkit to your own configuration in the `spec-file.txt`.
 
-### Installation method 2
+### Installation method 2 - Use conda recommended packages
 
-This method does not guarantee to get the exact same configuration as newer package may be installed.
+This method does not guarantee to get the exact same configuration as the author as newer package may be installed by conda.
 
 1. Get this repository
 
@@ -67,6 +93,16 @@ conda install -c conda-forge librosa
 
 - My configuration has CUDA 10 installed, so you may have to adapt version of pytorch and cudatoolkit to your own configuration
 - You may have inconsistency warnings because we use libjpeg-turbo
+
+### Hardware / Software
+
+During the competition I use the following:
+
+- Intel Core i7 4790k
+- Nvidia RTX 2080 ti
+- 24 GB RAM
+- Ubuntu 18.04.2 LTS
+- Detailed list of installed python package with conda (more than necessary) are available in [requirements.txt](requirements.txt) and [spec-file.txt](spec-file.txt).
 
 ## Reproduce results
 
@@ -176,7 +212,7 @@ One important technique to leverage a small training set is to augment this set 
 
 **mixup** creates a virtual training example by computing a weighted average of two samples inputs and targets.
 
-#### SpecMix
+#### SpecMix :+1:
 
 **SpecMix** is inspired from the two most effective transformations from  _SpecAugment_ and extends them to create virtual multi-labels training examples:
 
@@ -194,13 +230,14 @@ Figure 1: Comparison of mixup, SpecAugment and SpecMix
 We added other data augmentation techniques:
 
 - **mixup** before SpecMix. A small improvement is observed (lwlrap increased by +0.001). mixup is first applied on current batch, generating new samples for the current batch and then SpecMix is applied on these newly created samples. In the end, combining mixup and SpecMix, up to four samples are involved in the generation of one single sample.
-- **zoom and crop**  small improvement too (lwlrap increased by +0.001)
+- **zoom and crop**: a random zoom between 1. and max1,05 is applied with probability 75% is applied, a small improvement is seen (lwlrap increased by +0.001).
+- **lighting**: a random lightning and contrast change controlled is applied with probability 75%.
 
-### Training
+### Training - warm-up pipeline :+1:
 
-At training time, we give to the network batches of 128  augmented excerpts of randomly selected sample mel-spectrograms. We use a 10-fold cross validation setup.
+At training time, we give to the network batches of 128 augmented excerpts of randomly selected sample mel-spectrograms. We use a 10-fold cross validation setup and the fastai library [4].
 
-  Training is done in 4 stages, each stage generating a model which is used for 3 things:
+Training is done in 4 stages, each stage generating a model which is used for 3 things:
 
 - **warm-up the model** training in the next stage
 - help in a **semi-supervised selection** of noisy elements
@@ -217,30 +254,55 @@ An important point of this competition, is that we are not allowed to use extern
 Figure 2: warm-up pipeline
 ![model-explained](images/model-explained.png)
 
-| Model | lwlrap noisy | lwlrap curated | leaderboard |
-| --- | --- | --- | --- |
-| model1 | 0.65057 | 0.41096 | N/A |
-| model2 | 0.38142 | 0.86222 | 0.723 |
-| model3 | 0.56716 | 0.87930 | 0.724 |
-| model4 | 0.57590 | 0.87718 | 0.724 |
-| ensemble | N/A | N/A | 0.733 |
+### Inference
+
+For inference we split the test audio clips in windows of 128 time samples (2 seconds), windows were overlapping. Then these samples are fed into our models to obtain predictions. All predictions linked to an audio clip are averaged to get the final predictions to submit.
+
+This competition had major constraints for test prediction inference: submission must be made through a Kaggle kernel with time constraints. As our solution requires a GPU, the inference of the whole unseen test set shall be done in less than an hour.
+
+In order to match this hard constraint, we took following decisions:
+
+- use same preprocessing and inputs for all models,
+- limit the final ensemble to two models only,
+- limit the overlapping of windows,
+- as the unseen test set was reported to be three times the public test set by organizers, then we made sure to infer the public test set in less than 1,000 seconds, which should allow the kernel to infer the unseen test set in about 3,000 seconds and keep a 20% time margin for safety.
+
+### Results
+
+To asses the performance of our system, we provide results in Table 2. Evaluation of performances on noisy set and curated set were cross-validated using 10-folds. Evaluation on test set predictions are values reported by the public leaderbord. The metric used is lwlrap (label-weighted label-ranking average precision).
+
+| Model    | lwlrap noisy | lwlrap curated | leaderboard |
+| -------- | ------------ | -------------- | ----------- |
+| model1   | 0.65057      | 0.41096        | N/A         |
+| model2   | 0.38142      | 0.86222        | 0.723       |
+| model3   | 0.56716      | 0.87930        | 0.724       |
+| model4   | 0.57590      | 0.87718        | 0.724       |
+| ensemble | N/A          | N/A            | 0.733       |
 
 Table 2: Empirical results of CNN-model-1 using proposed warm-up pipeline
 
-## Hardware / Software
+Each stage of the warm-up pipeline generates a model with excellent prediction performance on the test test. As one can see in Figure 3, each model would give us a silver medal with the 25th  position on the public [leaderboard](https://www.kaggle.com/c/freesound-audio-tagging-2019/leaderboard). Moreover these warm-up models bring sufficient diversity on their own, as a simple averaging of their predictions (lwlrap .733) gives 16th position on the public [leaderboard](https://www.kaggle.com/c/freesound-audio-tagging-2019/leaderboard).
 
-During the competition I use the following:
+Final 12th position of the author was provided by version 1, which is an average of the predictions given by CNN-model-1 and VGG-16, both trained the same way.
 
-- Intel Core i7 4790k
-- Nvidia RTX 2080 ti
-- 24 GB RAM
-- Ubuntu 18.04.2 LTS
-- Detailed list of installed python package with conda (more than necessary) are available in [requirements.txt](requirements.txt) and [spec-file.txt](spec-file.txt).
+### Conclusion
 
-## REFERENCES
+This paper presents a semi-supervised warm-up pipeline used to create an efficient audio tagging system as well as a novel data augmentation technique for multi-labels audio tagging named by the author SpecMix. These techniques leveraged both clean and noisy sets and were shown to give excellent results.
+
+These results are reproducible, description of requirements, steps to reproduce and source code are available on GitHub1. Source code is released under an open source license (MIT).
+
+### Ackowledgment
+
+These results were possible thanks to the infinite support of my 5 years-old boy, who said while I was watching the public leaderboard: *“Dad, you are the best and you will be at the very top”*. ❤️
+
+I also thank the whole kaggle community for sharing knowledge, ideas and code. In peculiar [daisuke](https://www.kaggle.com/daisukelab) for his [kernels](https://www.kaggle.com/c/freesound-audio-tagging-2019/kernels) during the competition and [mhiro2](https://www.kaggle.com/mhiro2) for his  [simple CNN-model](https://www.kaggle.com/mhiro2/simple-2d-cnn-classifier-with-pytorch) and all the competition organizers.
+
+### References
 
 [1] Daniel S. Park, William Chan, Yu Zhang, Chung-Cheng Chiu, Barret Zoph, Ekin D. Cubuk, Quoc V. Le, &quot;SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition&quot;, [arXiv:1904.08779](https://arxiv.org/abs/1904.08779), 2019.
 
 [2] Hongyi Zhang, Moustapha Cisse, Yann N. Dauphin, and David Lopez-Paz.  &quot;_mixup: Beyondempirical risk minimization_&quot;. arXiv preprint arXiv:1710.09412, 2017.
 
 [3] Eduardo Fonseca, Manoj Plakal, Frederic Font, Daniel P. W. Ellis, and Xavier Serra. &quot;Audio tagging with noisy labels and minimal supervision&quot;. Submitted to DCASE2019 Workshop, 2019. URL: [https://arxiv.org/abs/1906.02975](https://arxiv.org/abs/1906.02975)
+
+[4] fastai, Howard, Jeremy and others, 2018, URL: [https://github.com/fastai/fastai](https://github.com/fastai/fastai)
