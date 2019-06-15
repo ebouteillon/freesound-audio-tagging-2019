@@ -1,12 +1,14 @@
-# Kaggle Freesound Audio Tagging 2019 Competition Solution
+# Kaggle Freesound Audio Tagging 2019 Competition - Eric BOUTEILLON's Solution
 
 This is the solution I proposed for [Kaggle Freesound Audio Tagging 2019 Competition](https://www.kaggle.com/c/freesound-audio-tagging-2019/overview).
+
+[![MIT license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![public leaderboard](https://img.shields.io/badge/public%20leaderboard-12-brightgreen.svg) ![private leaderboard](https://img.shields.io/badge/private%20leaderboard-%3F-orange.svg)](https://www.kaggle.com/c/freesound-audio-tagging-2019/leaderboard)
 
 ## Presentation
 
 This repository presents a semi-supervised **warm-up pipeline** used to create an efficient audio tagging system as well as a novel data augmentation technique for multi-labels audio tagging named by the author **SpecMix**.
 
- These new techniques were applied to our submitted audio tagging system to the _Freesound Audio Tagging 2019_ challenge carried out within the _DCASE 2019 Task 2 challenge_ [3]. Purpose of this challenge consist of predicting the audio labels for every test clips using machine learning techniques trained on a small amount of reliable, manually-labeled data, and a larger quantity of noisy web audio data in a multi-label audio tagging task with a large vocabulary setting.
+These new techniques were applied to our submitted audio tagging system to the Kaggle _Freesound Audio Tagging 2019_ challenge carried out within the _DCASE 2019 Task 2 challenge_ [3]. Purpose of this challenge consist of predicting the audio labels for every test clips using machine learning techniques trained on a small amount of reliable, manually-labeled data, and a larger quantity of noisy web audio data in a multi-label audio tagging task with a large vocabulary setting.
 
 ## TL;DR - give me code!
 
@@ -18,11 +20,126 @@ Provided Jupyter notebooks result in a [lwlrap](https://www.kaggle.com/c/freesou
 
 You can also find resulting weights of CNN-model-1 and VGG-16 training in [weights directory](weights). Note [git-lfs](https://git-lfs.github.com/) might be required to download them using git.
 
-## Audio Data Preprocessing
+## Installation
+
+This competition required to performed inference in a Kaggle kernel without change in its configuration. So it was important to use same version of pytorch and fastai as the Kaggle kernel configuration during the competition to be able to load locally generated CNN weights. So it is important to use pytorch 1.0.1 and fastai 1.0.51.
+
+#### Installation method 1
+To get same configuration as my local system, here are the steps, tested on GNU Linux Ubuntu 18.04.2 LTS:
+
+1. Get this repository
+
+2. Install [anaconda3](https://docs.anaconda.com/anaconda/install/)
+
+3. Type in a linux terminal:
+
+```bash
+conda create --name freesound --file spec-file.txt
+```
+
+You are ready to go!
+
+**Note:** My configuration has CUDA 10 installed, so you may have to adapt version of pytorch and cudatoolkit to your own configuration in the `spec-file.txt`.
+
+#### Installation method 2
+
+This method does not guarantee to get the exact same configuration as newer package may be installed.
+
+1. Get this repository
+
+2. Install [anaconda3](https://docs.anaconda.com/anaconda/install/)
+
+3. Type in a linux terminal:
+
+```bash
+conda update conda
+conda create -n freesound python=3.7 anaconda
+conda activate freesound
+conda install numpy pandas scipy scikit-learn matplotlib tqdm seaborn pytorch==1.0.1 torchvision cudatoolkit=10.0 fastai==1.0.51 -c pytorch -c fastai
+conda uninstall --force jpeg libtiff -y
+conda install -c conda-forge libjpeg-turbo
+CC="cc -mavx2" pip install --no-cache-dir -U --force-reinstall --no-binary :all: --compile pillow-simd
+conda install -c conda-forge librosa
+```
+
+**Notes:**
+- My configuration has CUDA 10 installed, so you may have to adapt version of pytorch and cudatoolkit to your own configuration
+- You may have inconsistency warnings because we use libjpeg-turbo
+
+## Reproduce results
+
+1. Download [dataset from Kaggle](https://www.kaggle.com/c/freesound-audio-tagging-2019/data)
+
+2. Unpack dataset in `input` folder so you environment looks like:
+
+```bash
+├── code
+│   ├── inference-kernel.ipynb
+│   ├── training-cnn-model1.ipynb
+│   └── training-vgg16.ipynb
+├── images
+│   ├── all_augmentations.png
+│   └── model-explained.png
+├── input
+│   ├── test
+│   │   └── ...
+│   ├── train_curated
+│   │   └── ...
+│   ├── train_noisy
+│   │   └── ...
+│   ├── sample_submission.csv
+│   ├── train_curated.csv
+│   ├── train_noisy.csv
+│   └── keep.txt
+├── LICENSE
+├── README.md
+├── requirements.txt
+├── spec-file.txt
+└── weights
+    ├── cnn-model-1
+    │   └── work
+    │       ├── models
+    │       │   └── keep.txt
+    │       ├── stage-10_fold-0.pkl
+    │       ├── ...
+    │       └── stage-2_fold-9.pkl
+    └── vgg16
+        └── work
+            ├── models
+            │   └── keep.txt
+            ├── stage-10_fold-0.pkl
+            ├── ...
+            └── stage-2_fold-9.pkl
+```
+
+3. Type in command-line:
+
+```bash
+conda activate freesound
+jupyter notebook
+```
+
+Your web-browser should open and then select the notebook you wanna execute.
+
+- [training-cnn-model1.ipynb](code/training-cnn-model1.ipynb)
+- [training-vgg16.ipynb](code/training-vgg16.ipynb)
+- [inference-kernel.ipynb](code/inference-kernel.ipynb)
+
+Enjoy!
+
+**Notes:**
+
+- Run first a `training-*.ipynb` notebook to train one of the models. :smile:
+- During CNN model training, a `work` folder and a `preprocessed` folders will be created, you may want to change their location: it is as easy as updating variables `WORK`and `PREPROCESSED`.
+- If you want to use the provided weights (or your own) with the inference notebook on your local setup, simply update folder paths pointed by `models_list`. I kept the paths used within the Kaggle kernel for the competition.
+
+## Solution Description
+
+### Audio Data Preprocessing
 
 Audio clips were first trimmed of leading and trailing silence (threshold of 60 dB), then converted into 128-bands mel-spectrogram using a 44.1 kHz sampling rate, hop length of 347 samples between successive frames, 2560 FFT components and frequencies kept in range 20 Hz – 22,050 Hz. Last preprocessing consisted in normalizing (mean=0, variance=1) the resulting images and duplicating to 3 channels.
 
-## Models Summary
+### Models Summary
 
 In this section, we describe the neural network architectures used:
 
@@ -49,7 +166,7 @@ In this section, we describe the neural network architectures used:
 
 Table 1: CNN-model-1. BN: Batch Normalisation, ReLU: Rectified Linear Unit,
 
-## Data Augmentation
+### Data Augmentation
 
 One important technique to leverage a small training set is to augment this set using data augmentation. For this purpose we created a new augmentation named **SpecMix**. This new augmentation is an extension of _SpecAugment_ [1] inspired by _mixup_ [2].
 
@@ -57,7 +174,7 @@ One important technique to leverage a small training set is to augment this set 
 
 **mixup** creates a virtual training example by computing a weighted average of two samples inputs and targets.
 
-### SpecMix
+#### SpecMix
 
 **SpecMix** is inspired from the two most effective transformations from  _SpecAugment_ and extends them to create virtual multi-labels training examples:
 
@@ -72,14 +189,14 @@ One important technique to leverage a small training set is to augment this set 
 Figure 1: Comparison of mixup, SpecAugment and SpecMix
 ![compare augmentations](images/all_augmentations.png)
 
-### Others data augmentation
+#### Others data augmentation
 
 We added other data augmentation techniques:
 
 - **mixup** before SpecMix. A small improvement is observed (lwlrap increased by +0.001). mixup is first applied on current batch, generating new samples for the current batch and then SpecMix is applied on these newly created samples. In the end, combining mixup and SpecMix, up to four samples are involved in the generation of one single sample.
 - **zoom and crop**  small improvement too (lwlrap increased by +0.001)
 
-## Training
+### Training
 
 At training time, we give to the network batches of 128  augmented excerpts of randomly selected sample mel-spectrograms. We use a 10-fold cross validation setup.
 
@@ -112,11 +229,13 @@ Table 2: Empirical results of CNN-model-1 using proposed warm-up pipeline
 
 ## Hardware / Software
 
+During the competition I use the following:
+
 - Intel Core i7 4790k
 - Nvidia RTX 2080 ti
 - 24 GB RAM
-- Ubuntu 18.04.2
-- Detailed list of installed [python package with conda](requirements.txt) (more than necessary)
+- Ubuntu 18.04.2 LTS
+- Detailed list of installed python package with conda (more than necessary) are available in [requirements.txt](requirements.txt) and [spec-file.txt](spec-file.txt).
 
 ## REFERENCES
 
