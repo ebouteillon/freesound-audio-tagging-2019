@@ -24,7 +24,8 @@ You can also find resulting weights of CNN-model-1 and VGG-16 training in [weigh
 
 This competition required to performed inference in a Kaggle kernel without change in its configuration. So it was important to use same version of pytorch and fastai as the Kaggle kernel configuration during the competition to be able to load locally generated CNN weights. So it is important to use pytorch 1.0.1 and fastai 1.0.51.
 
-#### Installation method 1
+### Installation method 1
+
 To get same configuration as my local system, here are the steps, tested on GNU Linux Ubuntu 18.04.2 LTS:
 
 1. Get this repository
@@ -41,7 +42,7 @@ You are ready to go!
 
 **Note:** My configuration has CUDA 10 installed, so you may have to adapt version of pytorch and cudatoolkit to your own configuration in the `spec-file.txt`.
 
-#### Installation method 2
+### Installation method 2
 
 This method does not guarantee to get the exact same configuration as newer package may be installed.
 
@@ -63,6 +64,7 @@ conda install -c conda-forge librosa
 ```
 
 **Notes:**
+
 - My configuration has CUDA 10 installed, so you may have to adapt version of pytorch and cudatoolkit to your own configuration
 - You may have inconsistency warnings because we use libjpeg-turbo
 
@@ -182,9 +184,7 @@ One important technique to leverage a small training set is to augment this set 
 2. _Time replacement_ is applied so that _t_ consecutive time steps _[t0, t0+t)_ are replaced from another training sample,  where _t_ is first chosen from a uniform distribution from 0 to the time mask parameter _T_, and _t0_ is chosen from _[0, τ−t)_.  _τ_ is the number of time samples.
 3. _Target_ of the new training sample is computed as the weighted average of each original samples. The weight for each original sample is proportional to the number of pixel from that sample. Our implementation uses same replacement sample for _Frequency replacement_ and _Time replacement_, so it gives us a new target computed based on:
 
-                (1)
-
-        where
+![equation](images/equation.png)
 
 Figure 1: Comparison of mixup, SpecAugment and SpecMix
 ![compare augmentations](images/all_augmentations.png)
