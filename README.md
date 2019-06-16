@@ -1,12 +1,14 @@
-# Kaggle Freesound Audio Tagging 2019 Competition - Eric BOUTEILLON's Solution
+# Kaggle Freesound Audio Tagging 2019 Competition
 
-This is the solution I proposed for [Kaggle Freesound Audio Tagging 2019 Competition](https://www.kaggle.com/c/freesound-audio-tagging-2019/overview).
+[![MIT license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![public leaderboard](https://img.shields.io/badge/public%20leaderboard-12th%20over%20881%20teams-brightgreen.svg) ![private leaderboard](https://img.shields.io/badge/private%20leaderboard-%3F-orange.svg)](https://www.kaggle.com/c/freesound-audio-tagging-2019/leaderboard)
 
-[![MIT license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![public leaderboard](https://img.shields.io/badge/public%20leaderboard-12th-brightgreen.svg) ![private leaderboard](https://img.shields.io/badge/private%20leaderboard-%3F-orange.svg)](https://www.kaggle.com/c/freesound-audio-tagging-2019/leaderboard)
+![spectrogram of https://freesound.org/people/envirOmaniac2/sounds/376452](images/header.png)
+
+This is Eric BOUTEILLON's proposed solution for [Kaggle Freesound Audio Tagging 2019 Competition](https://www.kaggle.com/c/freesound-audio-tagging-2019/overview).
 
 ## Table of Content
 
-- [Kaggle Freesound Audio Tagging 2019 Competition - Eric BOUTEILLON's Solution](#kaggle-freesound-audio-tagging-2019-competition---eric-bouteillons-solution)
+- [Kaggle Freesound Audio Tagging 2019 Competition](#kaggle-freesound-audio-tagging-2019-competition)
   - [Table of Content](#table-of-content)
   - [Motivation of this repository](#motivation-of-this-repository)
   - [TL;DR - give me code!](#tldr---give-me-code)
@@ -54,7 +56,11 @@ This competition required to performed inference in a Kaggle kernel without chan
 
 To get same configuration as my local system, here are the steps, tested on GNU Linux Ubuntu 18.04.2 LTS:
 
-1. Get this repository
+1. Clone this repository
+
+```bash
+git clone https://github.com/ebouteillon/freesound-audio-tagging-2019.git
+```
 
 2. Install [anaconda3](https://docs.anaconda.com/anaconda/install/)
 
@@ -72,7 +78,11 @@ You are ready to go!
 
 This method does not guarantee to get the exact same configuration as the author as newer package may be installed by conda.
 
-1. Get this repository
+1. Clone this repository
+
+```bash
+git clone https://github.com/ebouteillon/freesound-audio-tagging-2019.git
+```
 
 2. Install [anaconda3](https://docs.anaconda.com/anaconda/install/)
 
@@ -103,6 +113,7 @@ During the competition I use the following:
 - 24 GB RAM
 - Ubuntu 18.04.2 LTS
 - Detailed list of installed python package with conda (more than necessary) are available in [requirements.txt](requirements.txt) and [spec-file.txt](spec-file.txt).
+- Nvidia drivers 418.67, CUDA 10.1, CuDNN 7.3.1
 
 ## Reproduce results
 
@@ -157,7 +168,7 @@ conda activate freesound
 jupyter notebook
 ```
 
-Your web-browser should open and then select the notebook you wanna execute.
+Your web-browser should open and then select the notebook you want to execute. Recommended order:
 
 - [training-cnn-model1.ipynb](code/training-cnn-model1.ipynb)
 - [training-vgg16.ipynb](code/training-vgg16.ipynb)
@@ -285,9 +296,12 @@ Each stage of the warm-up pipeline generates a model with excellent prediction p
 
 Final 12th position of the author was provided by version 1, which is an average of the predictions given by CNN-model-1 and VGG-16, both trained the same way.
 
+*Figure 3: Public leaderboard*
+![public leaderboard](images/public-leaderboard.png)
+
 ### Conclusion
 
-This paper presents a semi-supervised warm-up pipeline used to create an efficient audio tagging system as well as a novel data augmentation technique for multi-labels audio tagging named by the author SpecMix. These techniques leveraged both clean and noisy sets and were shown to give excellent results.
+This git repository presents a semi-supervised warm-up pipeline used to create an efficient audio tagging system as well as a novel data augmentation technique for multi-labels audio tagging named by the author SpecMix. These techniques leveraged both clean and noisy sets and were shown to give excellent results.
 
 These results are reproducible, description of requirements, steps to reproduce and source code are available on GitHub1. Source code is released under an open source license (MIT).
 
