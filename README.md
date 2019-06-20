@@ -8,27 +8,27 @@ This is Eric BOUTEILLON's proposed solution for [Kaggle Freesound Audio Tagging 
 
 ## Table of Content
 
-- [Kaggle Freesound Audio Tagging 2019 Competition](#kaggle-freesound-audio-tagging-2019-competition)
-  - [Table of Content](#table-of-content)
-  - [Motivation of this repository](#motivation-of-this-repository)
-  - [TL;DR - give me code!](#tldr---give-me-code)
-  - [Installation](#installation)
-    - [Installation method 1 - Identical to author](#installation-method-1---identical-to-author)
-    - [Installation method 2 - Use conda recommended packages](#installation-method-2---use-conda-recommended-packages)
-    - [Hardware / Software](#hardware--software)
-  - [Reproduce results](#reproduce-results)
-  - [Solution Description](#solution-description)
-    - [Audio Data Preprocessing](#audio-data-preprocessing)
-    - [Models Summary](#models-summary)
-    - [Data Augmentation](#data-augmentation)
-      - [SpecMix :+1:](#specmix-1)
-      - [Others data augmentation](#others-data-augmentation)
-    - [Training - warm-up pipeline :+1:](#training---warm-up-pipeline-1)
-    - [Inference](#inference)
-    - [Results](#results)
-    - [Conclusion](#conclusion)
-    - [Ackowledgment](#ackowledgment)
-    - [References](#references)
+- [Kaggle Freesound Audio Tagging 2019 Competition](#Kaggle-Freesound-Audio-Tagging-2019-Competition)
+  - [Table of Content](#Table-of-Content)
+  - [Motivation of this repository](#Motivation-of-this-repository)
+  - [TL;DR - give me code!](#TLDR---give-me-code)
+  - [Installation](#Installation)
+    - [Installation method 1 - Identical to author](#Installation-method-1---Identical-to-author)
+    - [Installation method 2 - Use conda recommended packages](#Installation-method-2---Use-conda-recommended-packages)
+    - [Hardware / Software](#Hardware--Software)
+  - [Reproduce results](#Reproduce-results)
+  - [Solution Description](#Solution-Description)
+    - [Audio Data Preprocessing](#Audio-Data-Preprocessing)
+    - [Models Summary](#Models-Summary)
+    - [Data Augmentation](#Data-Augmentation)
+      - [SpecMix :+1:](#SpecMix-1)
+      - [Others data augmentation](#Others-data-augmentation)
+    - [Training - warm-up pipeline :+1:](#Training---warm-up-pipeline-1)
+    - [Inference](#Inference)
+    - [Results](#Results)
+    - [Conclusion](#Conclusion)
+    - [Ackowledgment](#Ackowledgment)
+    - [References](#References)
 
 Indicators :+1: were added to sections containing major contributions from the author.
 
@@ -46,7 +46,7 @@ Provided Jupyter notebooks result in a [lwlrap](https://www.kaggle.com/c/freesou
 - [Training VGG16 model](code/training-vgg16.ipynb)
 - [Inference kernel](code/inference-kernel.ipynb)
 
-You can also find resulting weights of CNN-model-1 and VGG-16 training in [weights directory](weights). Note [git-lfs](https://git-lfs.github.com/) might be required to download them using git.
+You can also find resulting weights of CNN-model-1 and VGG-16 training in [a public kaggle dataset](https://www.kaggle.com/ebouteillon/freesoundaudiotagging2019ebouteillonsolution). Note I am no longer using [git-lfs](https://git-lfs.github.com/) to store weights due to quota issues.
 
 ## Installation
 
@@ -119,7 +119,9 @@ During the competition I use the following:
 
 1. Download [dataset from Kaggle](https://www.kaggle.com/c/freesound-audio-tagging-2019/data)
 
-2. Unpack dataset in `input` folder so you environment looks like:
+2. (optional) Download [my weights dataset from Kaggle](https://www.kaggle.com/ebouteillon/freesoundaudiotagging2019ebouteillonsolution)
+
+3. Unpack dataset in `input` folder so you environment looks like:
 
 ```bash
 ├── code
@@ -181,6 +183,7 @@ Enjoy!
 - Run first a `training-*.ipynb` notebook to train one of the models. :smile:
 - During CNN model training, a `work` folder and a `preprocessed` folders will be created, you may want to change their location: it is as easy as updating variables `WORK`and `PREPROCESSED`.
 - If you want to use the provided weights (or your own) with the inference notebook on your local setup, simply update folder paths pointed by `models_list`. I kept the paths used within the Kaggle kernel for the competition.
+- An inference kernel is available on kaggle using both kaggle dataset and my weights dataset just [fork it](https://www.kaggle.com/ebouteillon/12th-public-lb-inference-kernel-using-fastai)
 
 ## Solution Description
 
