@@ -1,10 +1,10 @@
 # Kaggle Freesound Audio Tagging 2019 Competition
 
-[![MIT license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![public leaderboard](https://img.shields.io/badge/public%20leaderboard-12th%20over%20881%20teams-brightgreen.svg) ![private leaderboard](https://img.shields.io/badge/private%20leaderboard-%3F-orange.svg)](https://www.kaggle.com/c/freesound-audio-tagging-2019/leaderboard)
+[![MIT license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![dcase2019](https://img.shields.io/badge/DCASE%202019-3rd%20team-brightgreen.svg)](http://dcase.community/challenge2019/task-audio-tagging-results#teams-ranking) [![Kaggle leaderboard](https://img.shields.io/badge/Kaggle-8th%20over%20881%20teams-brightgreen.svg)](https://www.kaggle.com/c/freesound-audio-tagging-2019/leaderboard) :medal_sports:
 
 ![spectrogram of https://freesound.org/people/envirOmaniac2/sounds/376452](images/header.png)
 
-This is Eric BOUTEILLON's proposed solution for [Kaggle Freesound Audio Tagging 2019 Competition](https://www.kaggle.com/c/freesound-audio-tagging-2019/overview).
+This is Eric BOUTEILLON's proposed solution for [Kaggle Freesound Audio Tagging 2019 Competition](https://www.kaggle.com/c/freesound-audio-tagging-2019/overview) and [DCASE 2019 Task 2](http://dcase.community/challenge2019/task-audio-tagging-results#teams-ranking).
 
 ## Table of Content
 
